@@ -114,6 +114,10 @@ WIKI_PLAN_COMPILE_KWD = "wiki_compilation_plan"
 WIKI_DRAFT_COMPILE_KWD = "wiki_page_draft"
 WIKI_PAGE_COMPILE_KWD = "wiki_page"
 WIKI_PAGE_TOPIC_COMPILE_KWD = "wiki_page_topic"
+WIKI_NO_ELIGIBLE_DOCS_MESSAGE = (
+    "No documents in this dataset are bound to a Wiki compilation template. "
+    "Configure an ingestion pipeline with a Compiler that uses a Wiki template."
+)
 WIKI_DERIVED_COMPILE_KWDS = (
     WIKI_REDUCE_COMPILE_KWD,
     WIKI_PLAN_COMPILE_KWD,
@@ -1321,7 +1325,7 @@ async def run_wiki(
 
     eligible = _wiki_eligible_docs(all_docs, ctx.tenant_id)
     if not eligible:
-        progress(1.0, "No documents are configured for wiki compilation.")
+        progress(1.0, WIKI_NO_ELIGIBLE_DOCS_MESSAGE)
         return
     pipeline_chat_llm_ids = _validate_wiki_eligible_docs(eligible)
 
@@ -1659,7 +1663,7 @@ async def run_wiki_incremental(
     eligible = _wiki_eligible_docs(all_docs, ctx.tenant_id, skip_doc_ids=deleted_doc_ids)
 
     if not eligible and not is_incremental:
-        progress(1.0, "No enabled documents are configured for wiki compilation.")
+        progress(1.0, WIKI_NO_ELIGIBLE_DOCS_MESSAGE)
         return
     pipeline_chat_llm_ids = _validate_wiki_eligible_docs(eligible) if eligible else {}
 
